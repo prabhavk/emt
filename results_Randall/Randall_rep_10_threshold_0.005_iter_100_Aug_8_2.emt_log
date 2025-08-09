@@ -1,0 +1,17 @@
+topology will be set using input file 
+0 duplicate sequences found; duplicate sequences will be not be used by emt
+optimizing gmm via EM with root placed at each internal node 10 times
+convergence threshold for EM is 0.005
+maximum number of EM iterations allowed is 100
+max log-likelihood is -4365
+total CPU time used is 10.4788 seconds
+arguments used to run program 
+sequence file name: Randall_leaf.fasta
+topology file name: leaf_topology.csv
+output prefix: Randall_rep_10_threshold_0.005_iter_100_Aug_8_2
+gmm parameters optimized by EM
+convergence threshold used for EM: 0.005
+maximum number of EM iterations allowed: 100
+total number of replicates per node: 10
+Randall_rep_10_threshold_0.005_iter_100_Aug_8_2.probability_max_ll
+EM replicates file name: Randall_rep_10_threshold_0.005_iter_100_Aug_8_2.rooting_initial_final_rep_loglik

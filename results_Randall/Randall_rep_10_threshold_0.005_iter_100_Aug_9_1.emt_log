@@ -1,0 +1,8 @@
+topology will be set using input file 
+0 duplicate sequences found; duplicate sequences will be not be used by emt
+total CPU time used is 0.0143172 seconds
+arguments used to run program 
+sequence file name: Randall_leaf.fasta
+topology file name: leaf_topology.csv
+output prefix: Randall_rep_10_threshold_0.005_iter_100_Aug_9_1
+Randall_rep_10_threshold_0.005_iter_100_Aug_9_1.probability_max_ll

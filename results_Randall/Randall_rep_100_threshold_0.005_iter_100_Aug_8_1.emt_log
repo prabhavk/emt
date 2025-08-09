@@ -1,0 +1,5 @@
+topology will be set using input file 
+0 duplicate sequences found; duplicate sequences will be not be used by emt
+optimizing gmm via EM with root placed at each internal node 100 times
+convergence threshold for EM is 0.005
+maximum number of EM iterations allowed is 100
