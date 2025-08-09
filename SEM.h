@@ -10,8 +10,14 @@
 #include <math.h>
 #include <iomanip>
 #include "MST.h"
-//#include <boost/math/tools/minima.hpp>
+#include "prim.h"
 using namespace Eigen;
+
+inline bool starts_with(const std::string& str, const std::string& prefix) {
+    return str.size() >= prefix.size() &&
+           str.compare(0, prefix.size(), prefix) == 0;
+}
+
 
 class SEM_vertex {	
 public:
@@ -1191,6 +1197,7 @@ public:
 	void OptimizeParametersForMultiRateMarkovModel();
 	void InitializeParameters();
 	void ComputeTransitionMatrices();
+	vector<string> split_ws(const string& s);
 	float ComputeScalingFactor(Matrix4f Q);
 	MatrixXf ComputeStationaryDistribution(Matrix4f Q);
 	void PerformModelSelection();
@@ -1641,7 +1648,8 @@ void SEM::ReadRootedTree(string treeFileName) {
 	v_id = 0;
 	ifstream edgeListFile(treeFileName.c_str());
 	for (string line; getline(edgeListFile, line);) {
-		boost::split(splitLine, line, [](char c){return c == '\t';});
+		auto splitLine = split_ws(line);
+		// boost::split(splitLine, line, [](char c){return c == '\t';});
 		u_name = splitLine[0];		
 		v_name = splitLine[1];
 		if (find(nonRootVertexNames.begin(),nonRootVertexNames.end(),v_name) == nonRootVertexNames.end()) {
@@ -1695,7 +1703,8 @@ void SEM::ReadRootedTree(string treeFileName) {
 	edgeListFile.clear();
 	edgeListFile.seekg(0, ios::beg);
 	for (string line; getline(edgeListFile, line);) {
-		boost::split(splitLine, line, [](char c){return c == '\t';});
+		vector<string> split_ws(const string& s);
+		// boost::split(splitLine, line, [](char c){return c == '\t';});
 		u_name = splitLine[0];
 		v_name = splitLine[1];
 		u_id = this->GetVertexId(u_name);
@@ -4533,6 +4542,14 @@ void SEM::ComputeMLEstimatesOfGMMGivenExpectedDataCompletion() {
 	}
 }
 
+vector<string> SEM::split_ws(const string& s) {
+    istringstream iss(s);
+    vector <string> out;
+    for (string tok; iss >> tok;) out.push_back(tok);
+    return out;
+}
+
+
 void SEM::StoreEdgeListForChowLiuTree() {
 	this->edgesForChowLiuTree.clear();	
 	SEM_vertex * v;
@@ -5377,7 +5394,6 @@ float SEM::GetExpectedMutualInformation(SEM_vertex * x, SEM_vertex* y) {
 }
 
 void SEM::ComputeChowLiuTree() {
-	using namespace boost;	
 	this->ClearAllEdges();
 	int numberOfVertices = this->vertexMap->size();
 	for (int i = 0; i < numberOfVertices; i++) {
@@ -5386,8 +5402,8 @@ void SEM::ComputeChowLiuTree() {
 	const int numberOfEdges = numberOfVertices * (numberOfVertices-1)/2;	
 	float maxMutualInformation = 0;
 	float mutualInformation;
-	float * shiftedNegMutualInformation;
-	shiftedNegMutualInformation = new float [numberOfEdges];		
+	float * negMutualInformation;
+	negMutualInformation = new float [numberOfEdges];		
 	SEM_vertex * u; SEM_vertex * v;	
 	int edgeIndex = 0;
 	for (int i=0; i<numberOfVertices; i++) {
@@ -5395,7 +5411,7 @@ void SEM::ComputeChowLiuTree() {
 		for (int j=i+1; j<numberOfVertices; j++) {
 			v = (*this->vertexMap)[j];
 			mutualInformation = this->GetExpectedMutualInformation(u,v);
-			shiftedNegMutualInformation[edgeIndex] = -1 * mutualInformation;
+			negMutualInformation[edgeIndex] = -1 * mutualInformation;
 			if (mutualInformation > maxMutualInformation) {
 				maxMutualInformation = mutualInformation;
 			}
@@ -5403,13 +5419,6 @@ void SEM::ComputeChowLiuTree() {
 		}
 	}
 		
-	// Compute shifted mutual information as follows
-	// shifted_negative_MI = max ({MI}) - MI + 0.00001
-	// 0.00001 is added to ensure that smallest shifted_negative_MI is greater than 0
-	maxMutualInformation += 0.00001;
-	for (int i = 0; i < numberOfEdges; i++) {
-		shiftedNegMutualInformation[i] += maxMutualInformation;
-	}
 	
 	typedef pair <int, int> E;
 
@@ -5422,11 +5431,12 @@ void SEM::ComputeChowLiuTree() {
 			edgeIndex += 1;
 		}
 	}
+
+	vector<int> p(numberOfVertices); 
+
+	prim_graph p_graph(numberOfVertices, edges, negMutualInformation, numberOfEdges);
 	
-	typedef adjacency_list <vecS, vecS, undirectedS, property <vertex_distance_t, int>, property <edge_weight_t, float> > Graph;
-	Graph g(edges, edges + numberOfEdges, shiftedNegMutualInformation, numberOfVertices);
-	vector < graph_traits < Graph >::vertex_descriptor >  p(num_vertices(g));
-	prim_minimum_spanning_tree(g, &p[0]);	
+	prim(p_graph, &p[0]);
 	
 	for (size_t i = 0; i != p.size(); i++) {
 		if (p[i] != i) {
@@ -5440,7 +5450,7 @@ void SEM::ComputeChowLiuTree() {
 				edgeIndex = this->GetEdgeIndex(p[i],i,numberOfVertices);
 			}
 //			if (u->name == "l_1" or v->name == "l_1") {
-//				cout << u->name << "\t" << v->name << "\t" << shiftedNegMutualInformation[edgeIndex] << endl;
+//				cout << u->name << "\t" << v->name << "\t" << negMutualInformation[edgeIndex] << endl;
 //				if (u->id < v->id) {
 //					cout << this->expectedCountsForVertexPair[pair<SEM_vertex*,SEM_vertex*>(u,v)] << endl;
 //				} else {
@@ -5450,7 +5460,7 @@ void SEM::ComputeChowLiuTree() {
 		}
 	}	
 	delete[] edges;
-	delete[] shiftedNegMutualInformation;
+	delete[] negMutualInformation;
 }
 
 void SEM::OptimizeTopology() {

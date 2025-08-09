@@ -8,16 +8,9 @@
 #include <iostream>
 #include <stdio.h>
 #include "utilities.h"
-// #include <Phylo.h>
-#include <boost/bind.hpp>
-#include <boost/config.hpp>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/prim_minimum_spanning_tree.hpp>
+#include "prim.h"
 #include <chrono>
 using namespace std;
-
-typedef boost::adjacency_list < boost::vecS, boost::vecS, boost::undirectedS, boost::property<boost::vertex_distance_t, int>, boost::property < boost::edge_weight_t, int> > Graph;
 
 class MST_vertex {
 public:
@@ -112,7 +105,6 @@ public:
 	void ReadSequences(string sequenceFileNameToSet);
 	void ComputeMST();
 	void CLGrouping();
-	void PlaceOnDegreeRestrictedSubtree(int max_degree);
 	void ComputeChowLiuTree();
 	void ComputeMST_nonACGT();	
 	void ResetSubtreeSizeThreshold();	
@@ -506,8 +498,8 @@ void MST_tree::UpdateMSTWithOneExternalVertex(vector<int> idsOfVerticesToRemove,
 	int numberOfVertices = int(this->vertexMap->size());	
 	const int numberOfEdges = int(this->edgeWeightsMap.size());
 	
-	int * weights;
-	weights = new int [numberOfEdges];
+	float * weights;
+	weights = new float [numberOfEdges];
 	
 	typedef pair <int,int > E;
 	E * edges;
@@ -520,10 +512,12 @@ void MST_tree::UpdateMSTWithOneExternalVertex(vector<int> idsOfVerticesToRemove,
 		edgeIndex += 1;		
 	}
 	
-	typedef boost::adjacency_list < boost::vecS, boost::vecS, boost::undirectedS, boost::property<boost::vertex_distance_t, int>, boost::property < boost::edge_weight_t, int> > Graph;
-	Graph g(edges, edges + numberOfEdges, weights, numberOfVertices);
-	vector < boost::graph_traits < Graph >::vertex_descriptor >  p(num_vertices(g));
-	prim_minimum_spanning_tree(g, &p[0]);
+	vector<int> p(numberOfVertices); 
+
+	prim_graph p_graph(numberOfVertices, edges, weights, numberOfEdges);
+	
+	prim(p_graph, &p[0]);
+	
 	delete[] edges;		
 	delete[] weights;		
 	vector <pair<int,int>> edgeWeightsToKeep;	
@@ -685,8 +679,8 @@ void MST_tree::UpdateMSTWithMultipleExternalVertices(vector<int> idsOfVerticesTo
 	const int numberOfEdges = int(this->edgeWeightsMap.size());
 //	cout << "Number of vertices in distance graph is " << numberOfVertices << endl;
 //	cout << "number of edges in distance graph is " << numberOfEdges << endl;
-	int * weights;
-	weights = new int [numberOfEdges];
+	float * weights;
+	weights = new float [numberOfEdges];
 	
 	typedef pair <int,int > E;
 	E * edges;
@@ -702,9 +696,12 @@ void MST_tree::UpdateMSTWithMultipleExternalVertices(vector<int> idsOfVerticesTo
 		edgeIndex += 1;		
 	}
 	
-	typedef boost::adjacency_list < boost::vecS, boost::vecS, boost::undirectedS, boost::property<boost::vertex_distance_t, int>, boost::property < boost::edge_weight_t, int> > Graph;
-	Graph g(edges, edges + numberOfEdges, weights, numberOfVertices);
-	vector < boost::graph_traits < Graph >::vertex_descriptor >  p(num_vertices(g));
+	vector<int> p(numberOfVertices); 
+
+	prim_graph p_graph(numberOfVertices, edges, weights, numberOfEdges);
+	
+	prim(p_graph, &p[0]);
+	
 	
 //	int start_vertex_for_prim = 0;
 //	for (pair<pair<int,int>,int> edgeAndWeight : this->edgeWeightsMap) {
@@ -712,7 +709,6 @@ void MST_tree::UpdateMSTWithMultipleExternalVertices(vector<int> idsOfVerticesTo
 //		break;
 //	}	
 //	cout << "start vertex for prim is \t" << start_vertex_for_prim << endl;
-	prim_minimum_spanning_tree(g, &p[0]);
 		
 	vector <pair<int,int>> edgeWeightsToKeep;	
 	vector <pair<int,int>> edgeWeightsToRemove;	
@@ -984,8 +980,8 @@ void MST_tree::ComputeMST() {
 	int numberOfVertices = (this->v_ind);		
 	const int numberOfEdges = numberOfVertices*(numberOfVertices-1)/2;		
 	
-	int * weights;
-	weights = new int [numberOfEdges];
+	float * weights;
+	weights = new float [numberOfEdges];
 		
 	int edgeIndex = 0;
 	for (int i=0; i<numberOfVertices; i++) {
@@ -1008,9 +1004,12 @@ void MST_tree::ComputeMST() {
 			edgeIndex += 1;
 		}
 	}	
-	Graph g(edges, edges + numberOfEdges, weights, numberOfVertices);
-	vector < boost::graph_traits < Graph >::vertex_descriptor >  p(num_vertices(g));
-	prim_minimum_spanning_tree(g, &p[0]);
+	
+	vector<int> p(numberOfVertices); 
+
+	prim_graph p_graph(numberOfVertices, edges, weights, numberOfEdges);
+	
+	prim(p_graph, &p[0]);
 	delete[] edges;		
 	int edgeCount = 0;
 //	ofstream MSTFile;
@@ -1031,32 +1030,5 @@ void MST_tree::ComputeMST() {
 //	MSTFile.close();
 	delete[] weights;
 }
-
-void MST_tree::PlaceOnDegreeRestrictedSubtree(int max_degree) {
-
-	// Algorithm
-	// Input:
-	//  MST M
-	//  k = max_degree
-	// Select V_internal = all internal (non-leaf) vertices of M
-	// Select V_leaves = leaves of M such that k neighbors of V_internal are present in V_degree U V_internal
-	//    ; select leaves in order of decreasing distance with neighbor in V_internal
-	// Graph T_degree_restricted = subgraph of M which is induced by V_internal U V_leaves	
-	// Compute supertree T_super = by performing CLGrouping(SEM-GMM) 
-		// parallelize using Huang et al approach
-		// root T_super at centroid
-		// store mutations on branches  
-	// Select V_place = V(M) \ V_internal U V_degree
-	// Place vertices in V_place onto T_super
-	// Restrict placement of any vertex v_p to subtree in T_super that contains the internal neighbor of v_p in M
-	// Place using branch mutations approach
-	// Parallelize placement
-	// optimize num of hairs based on 
-	// compute time
-	// accuracy
-	// Let T_final be the tree computed after placing all vertices 
-
-}
-
 
 #endif
