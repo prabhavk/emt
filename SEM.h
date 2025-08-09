@@ -1183,10 +1183,6 @@ public:
 	void RootTreeUsingEstimatedParametersViaML();
 	void SetFlagForFinalIterationOfSEM();
 	void OptimizeTopologyAndParametersOfGMM();	
-//	void RootNJTreeViaEM();
-	void SetRateCategories(float DeltaGCThreshold);
-	void ComputeGCCountsForEachVertex();
-	void SetSortedListOfDeltaGCThresholds();	
 	vector<string> split_ws(const string& s);	
 	float BIC;
 	float AIC;
@@ -3102,23 +3098,6 @@ void SEM::ComputeLogLikelihood() {
 //		}
 		this->logLikelihood += (this->root->logScalingFactors + log(siteLikelihood)) * this->sitePatternWeights[site];				
 	}
-}
-
-void SEM::SetRateCategories(float threshold){
-	int rateCat = 0;
-	this->numberOfRateCategories = 1;
-	SEM_vertex * p; SEM_vertex * c;	
-	for (pair<SEM_vertex *, SEM_vertex *> edge : this->edgesForPreOrderTreeTraversal) {
-		tie (p, c) = edge;
-		if (p->parent == p) {
-			p->rateCategory = rateCat;
-		}
-		c->rateCategory = p->rateCategory;
-		if (abs(p->GCContent - c->GCContent) > threshold) {
-			c->rateCategory += 1;
-			this->numberOfRateCategories += 1;
-		}		
-	}	
 }
 
 void SEM::OptimizeTopologyAndParametersOfGMM() {
