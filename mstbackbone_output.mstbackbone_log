@@ -1,0 +1,30 @@
+Distance measure used for NJ is Hamming
+Supertree will not be rooted 
+Constraint size is set at	10
+Prefix for output files is 	mstbackbone_output
+0 duplicate sequences found; duplicate sequences will be not be used by mst-backbone; instead they will be added to the supertree constructed by mst-backbone
+Time taken to compute MST is 0.0377755 seconds
+Number of vertices in MST is 156
+CPU time used for computing subtree with 28 leaves is 0.696587 seconds
+Number of vertices in MST is 144
+CPU time used for computing subtree with 32 leaves is 1.10556 seconds
+Number of vertices in MST is 128
+CPU time used for computing subtree with 22 leaves is 0.156416 seconds
+Number of vertices in MST is 117
+CPU time used for computing subtree with 29 leaves is 0.379764 seconds
+Number of vertices in MST is 104
+CPU time used for computing subtree with 33 leaves is 0.64295 seconds
+Number of vertices in MST is 88
+CPU time used for computing subtree with 34 leaves is 1.86565 seconds
+Number of vertices in MST is 65
+CPU time used for computing subtree with 24 leaves is 0.708828 seconds
+Number of vertices in MST is 53
+CPU time used for computing subtree with 26 leaves is 0.583325 seconds
+Number of vertices in MST is 39
+CPU time used for computing subtree with 24 leaves is 0.795191 seconds
+Number of vertices in MST is 28
+CPU time used for computing subtree with 23 leaves is 0.569926 seconds
+CPU time used for computing subtree with 16 leaves is 0.0950611 seconds
+Adding duplicated sequences to tree
+Time taken for computing unrooted supertree is 7.60923 seconds
+Total CPU time used is 7.64721 seconds

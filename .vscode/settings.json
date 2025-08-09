@@ -12,7 +12,8 @@
         "*.tcc": "cpp",
         "iosfwd": "cpp",
         "iomanip": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "filesystem": "cpp"
     },
     "jupyter.jupyterServerType": "local"
 }
