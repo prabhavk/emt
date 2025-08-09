@@ -3,28 +3,28 @@ Supertree will not be rooted
 Constraint size is set at	10
 Prefix for output files is 	mstbackbone_output
 0 duplicate sequences found; duplicate sequences will be not be used by mst-backbone; instead they will be added to the supertree constructed by mst-backbone
-Time taken to compute MST is 0.0592013 seconds
+Time taken to compute MST is 0.0470712 seconds
 Number of vertices in MST is 156
-CPU time used for computing subtree with 28 leaves is 0.57606 seconds
+CPU time used for computing subtree with 28 leaves is 0.660001 seconds
 Number of vertices in MST is 144
-CPU time used for computing subtree with 32 leaves is 0.932989 seconds
+CPU time used for computing subtree with 32 leaves is 0.54042 seconds
 Number of vertices in MST is 128
-CPU time used for computing subtree with 22 leaves is 0.201497 seconds
+CPU time used for computing subtree with 22 leaves is 0.194384 seconds
 Number of vertices in MST is 117
-CPU time used for computing subtree with 29 leaves is 0.366856 seconds
+CPU time used for computing subtree with 29 leaves is 0.443283 seconds
 Number of vertices in MST is 104
-CPU time used for computing subtree with 33 leaves is 1.02318 seconds
+CPU time used for computing subtree with 33 leaves is 0.621046 seconds
 Number of vertices in MST is 88
-CPU time used for computing subtree with 34 leaves is 1.80453 seconds
+CPU time used for computing subtree with 34 leaves is 1.78364 seconds
 Number of vertices in MST is 65
-CPU time used for computing subtree with 24 leaves is 0.700568 seconds
+CPU time used for computing subtree with 24 leaves is 0.460596 seconds
 Number of vertices in MST is 53
-CPU time used for computing subtree with 26 leaves is 0.979034 seconds
+CPU time used for computing subtree with 26 leaves is 0.789444 seconds
 Number of vertices in MST is 39
-CPU time used for computing subtree with 24 leaves is 0.803271 seconds
+CPU time used for computing subtree with 24 leaves is 0.664667 seconds
 Number of vertices in MST is 28
-CPU time used for computing subtree with 23 leaves is 0.559139 seconds
-CPU time used for computing subtree with 16 leaves is 0.174531 seconds
+CPU time used for computing subtree with 23 leaves is 0.606294 seconds
+CPU time used for computing subtree with 16 leaves is 0.0921315 seconds
 Adding duplicated sequences to tree
-Time taken for computing unrooted supertree is 8.1309 seconds
-Total CPU time used is 8.19034 seconds
+Time taken for computing unrooted supertree is 6.86526 seconds
+Total CPU time used is 6.91258 seconds
