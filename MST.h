@@ -55,8 +55,7 @@ private:
 	map <pair<int,int>,int> * allEdgeWeights;
 	chrono::system_clock::time_point current_time;
 	chrono::system_clock::time_point start_time;
-	chrono::system_clock::time_point time_to_compute_MST;
-	bool build_MST_incrementally = false;
+	chrono::system_clock::time_point time_to_compute_MST;	
 		
 public:
 	int maxDegree;	
@@ -104,9 +103,7 @@ public:
 	int GetNumberOfVertices();
 	void ReadSequences(string sequenceFileNameToSet);
 	void ComputeMST();
-	void CLGrouping();
-	void ComputeChowLiuTree();
-	void ComputeMST_nonACGT();	
+	void CLGrouping();		
 	void ResetSubtreeSizeThreshold();	
 	void DoubleSubtreeSizeThreshold();
 	int ComputeHammingDistance(vector <unsigned char> recodedSeq1, vector <unsigned char> recodedSeq2);
@@ -947,33 +944,6 @@ void MST_tree::ReadSequences(string sequenceFileNameToSet) {
 	
 }
 
-// void MST_tree::SelectLeaders(){
-// 	this->leaders;
-// 	for (pair <int,MST_vertex*> idPtr_pair: *this->vertexMap){			
-// 			if (idPtr_pair.second->degree > 1) {
-// 				this->leaderIds;
-// 			}
-// 		}
-// 	// MST_vertex* v_ptr = (*this->vertexMap)[vertexIdList[i]];
-// }
-
-// Follows the terminology in Huang and colleagues 2019
-// parallelize using OpenMP
-void MST_tree::CLGrouping(){
-	this->SetLeaders();
-	cout << " number of leaders is " << this->leader_ptrs.size() << endl;
-	for (MST_vertex * v: this->leader_ptrs) {
-		if (v->degree > 1) {
-			cout << "degree of " << v->name << " is " << v->degree << endl;
-		} else {
-			exit(-1);
-		}
-	}
-	// select leaders (internal vertices)
-	// build subtree for each leader
-	// Perform pairwise merger of subtrees 
-	// Merge subtree for each pair of adjacent vertices on MST
-}
 
 void MST_tree::ComputeMST() {
 
