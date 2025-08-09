@@ -5,7 +5,6 @@
 #include <chrono>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/unsupported/Eigen/MatrixFunctions>
-#include <boost/algorithm/string.hpp>
 #include <fstream>
 #include <math.h>
 #include <iomanip>
@@ -1659,7 +1658,7 @@ void SEM::ReadRootedTree(string treeFileName) {
 			ancestorNames.push_back(u_name);
 		}
 		if (find(leafNames.begin(),leafNames.end(),v_name)==leafNames.end()) {
-			if(!boost::starts_with(v_name, "h_")) {
+			if(!starts_with(v_name, "h_")) {
 				leafNames.push_back(v_name);
 			}
 		}
